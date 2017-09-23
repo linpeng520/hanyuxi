@@ -2,6 +2,7 @@ package com.coolweather.android;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,12 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if (currentLevel==LEVEL_COUNTY){
+                    String weatherId=countyList.get(position).getWeatherId();
+                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -185,19 +192,19 @@ public class ChooseAreaFragment extends Fragment {
                     result = Utility.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
                     result = Utility.handleCityResponse(responseText, selectedProvince.getId());
-                }else if ("county".equals(type)){
-                    result=Utility.handleCountyResponse(responseText,selectedCity.getId());
+                } else if ("county".equals(type)) {
+                    result = Utility.handleCountyResponse(responseText, selectedCity.getId());
                 }
-                if (result){
+                if (result) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             closeProgressDialog();
-                            if ("province".equals(type)){
+                            if ("province".equals(type)) {
                                 queryProvinces();
-                            }else if ("city".equals(type)){
+                            } else if ("city".equals(type)) {
                                 queryCities();
-                            }else if ("county".equals(type)){
+                            } else if ("county".equals(type)) {
                                 queryCounties();
                             }
                         }
@@ -208,14 +215,14 @@ public class ChooseAreaFragment extends Fragment {
     }
 
     private void closeProgressDialog() {
-        if (progressDialog!=null){
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
 
     private void showProgressDialog() {
-        if (progressDialog==null){
-            progressDialog=new ProgressDialog(getActivity());
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("正在加载...");
             progressDialog.setCanceledOnTouchOutside(false);
         }
